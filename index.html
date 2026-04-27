@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>REWORK – Can Remote Working Make Labour Market More Inclusive?</title>
+<style>
+  :root{
+    --teal:#0b6e5e; --teal2:#0d8a75; --teal-light:#e6f4f1;
+    --teal-pale:#f0faf8; --slate:#1e2d3d; --slate2:#334155;
+    --gray:#f5f7f9; --border:#d4e2de; --text:#1e2d3d;
+    --text2:#4a5f6e; --white:#fff; --red:#c0392b;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{font-family:'Helvetica Neue',Arial,sans-serif;background:var(--white);color:var(--text);font-size:15px}
+  a{color:var(--teal);text-decoration:none}
+  a:hover{text-decoration:underline}
+
+  /* TOP STRIP */
+  .strip{background:var(--slate);color:rgba(255,255,255,.55);font-size:.72rem;padding:6px 0;letter-spacing:.04em}
+  .strip-inner{max-width:1140px;margin:0 auto;padding:0 24px;display:flex;gap:20px;flex-wrap:wrap;align-items:center}
+  .strip a{color:rgba(255,255,255,.7)}
+  .strip a:hover{color:#fff;text-decoration:none}
+  .strip-sep{opacity:.3}
+
+  /* NAV */
+  nav{background:var(--white);border-bottom:2px solid var(--teal);position:sticky;top:0;z-index:100;box-shadow:0 1px 8px rgba(0,0,0,.08)}
+  .nav-inner{max-width:1140px;margin:0 auto;padding:0 24px;display:flex;align-items:center;flex-wrap:wrap}
+  .logo{display:flex;align-items:baseline;gap:6px;padding:12px 24px 12px 0;border-right:1px solid var(--border);margin-right:8px}
+  .logo-re{font-size:1.4rem;font-weight:900;color:var(--teal);letter-spacing:-.02em}
+  .logo-work{font-size:1.4rem;font-weight:900;color:var(--slate);letter-spacing:-.02em}
+  .logo-sub{font-size:.68rem;color:var(--text2);letter-spacing:.04em;text-transform:uppercase;margin-left:2px;align-self:center}
+  .nav-tabs{display:flex;flex-wrap:wrap}
+  .nt{color:var(--text2);font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;padding:15px 12px;cursor:pointer;border:none;background:none;border-bottom:3px solid transparent;transition:all .2s;white-space:nowrap;font-weight:600}
+  .nt:hover{color:var(--teal)}
+  .nt.active{color:var(--teal);border-bottom-color:var(--teal)}
+
+  /* HERO */
+  .hero{background:var(--teal-pale);border-bottom:1px solid var(--border);padding:56px 24px 48px}
+  .hero-inner{max-width:1140px;margin:0 auto;display:grid;grid-template-columns:1fr 320px;gap:48px;align-items:start}
+  @media(max-width:800px){.hero-inner{grid-template-columns:1fr}}
+  .hero-kicker{display:inline-flex;align-items:center;gap:8px;background:var(--teal);color:#fff;font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:4px 12px;border-radius:2px;margin-bottom:16px}
+  .hero h1{font-size:2rem;font-weight:800;line-height:1.25;color:var(--slate);margin-bottom:12px}
+  .hero h1 span{color:var(--teal)}
+  .hero-desc{font-size:.95rem;color:var(--text2);line-height:1.75;margin-bottom:24px;max-width:620px}
+  .hero-btns{display:flex;gap:10px;flex-wrap:wrap}
+  .btn{display:inline-block;padding:9px 20px;border-radius:4px;font-size:.78rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;transition:all .2s;text-decoration:none}
+  .btn-primary{background:var(--teal);color:#fff;border:2px solid var(--teal)}
+  .btn-primary:hover{background:var(--teal2);border-color:var(--teal2);text-decoration:none}
+  .btn-outline{background:transparent;color:var(--teal);border:2px solid var(--teal)}
+  .btn-outline:hover{background:var(--teal-light);text-decoration:none}
+
+  /* INFO CARD (hero right) */
+  .info-card{background:var(--white);border:1px solid var(--border);border-top:4px solid var(--teal);border-radius:4px;padding:22px;font-size:.83rem}
+  .info-card h3{font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);margin-bottom:14px}
+  .info-row{display:flex;gap:10px;padding:7px 0;border-bottom:1px solid var(--border)}
+  .info-row:last-child{border-bottom:none}
+  .info-key{font-weight:700;color:var(--slate);min-width:80px;flex-shrink:0}
+  .info-val{color:var(--text2);line-height:1.5}
+
+  /* CONTENT */
+  .content{max-width:1140px;margin:0 auto;padding:0 24px 60px}
+  .section{display:none;opacity:0;transform:translateY(14px);transition:opacity .35s ease,transform .35s ease;padding:44px 0 16px}
+  .section.active{display:block}
+  .section.visible{opacity:1;transform:translateY(0)}
+
+  h2.st{font-size:1.3rem;font-weight:800;color:var(--slate);margin-bottom:24px;padding-bottom:10px;border-bottom:2px solid var(--teal-light);display:flex;align-items:center;gap:10px}
+  h2.st::before{content:'';display:block;width:4px;height:22px;background:var(--teal);border-radius:2px;flex-shrink:0}
+  h3.sh{font-size:.95rem;font-weight:700;color:var(--slate);margin:26px 0 12px;text-transform:uppercase;letter-spacing:.05em}
+  p{line-height:1.8;color:var(--text2);margin-bottom:14px;font-size:.94rem}
+
+  /* CARDS */
+  .card{background:var(--white);border:1px solid var(--border);border-radius:4px;padding:18px 22px;margin-bottom:12px;transition:box-shadow .2s}
+  .card:hover{box-shadow:0 3px 12px rgba(11,110,94,.1)}
+  .card-num{display:inline-block;background:var(--teal);color:#fff;font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:2px;margin-bottom:8px;letter-spacing:.06em}
+  .card-title{font-size:.95rem;font-weight:700;color:var(--slate);margin-bottom:5px;line-height:1.4}
+  .card-body{font-size:.83rem;color:var(--text2);line-height:1.65}
+
+  /* STATS */
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:24px 0}
+  @media(max-width:700px){.stats{grid-template-columns:1fr 1fr}}
+  .stat{background:var(--teal-pale);border:1px solid var(--border);border-radius:4px;padding:20px 16px;text-align:center}
+  .stat-n{font-size:1.85rem;font-weight:900;color:var(--teal);line-height:1;margin-bottom:4px}
+  .stat-l{font-size:.7rem;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;line-height:1.4}
+
+  /* TEAM */
+  .team-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  @media(max-width:700px){.team-grid{grid-template-columns:1fr}.two-col{grid-template-columns:1fr!important}}
+  .tc{background:var(--white);border:1px solid var(--border);border-radius:4px;padding:18px}
+  .tc-name{font-size:.93rem;font-weight:700;color:var(--slate);margin-bottom:2px}
+  .tc-role{font-size:.72rem;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
+  .tc-info{font-size:.8rem;color:var(--text2);line-height:1.6}
+  .tc-info a{color:var(--teal);font-size:.78rem}
+
+  /* TIMELINE */
+  .tl{border-left:3px solid var(--teal-light);padding-left:24px;margin-top:8px}
+  .tli{position:relative;margin-bottom:20px}
+  .tli::before{content:'';position:absolute;left:-30px;top:5px;width:12px;height:12px;border-radius:50%;background:var(--teal);border:2px solid var(--white)}
+  .tly{font-size:.72rem;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:.08em;margin-bottom:3px}
+  .tlt{font-size:.88rem;color:var(--text2);line-height:1.65}
+
+  /* PUBLICATIONS */
+  .pub{padding:14px 0;border-bottom:1px solid var(--border)}
+  .pub:last-child{border-bottom:none}
+  .pub-auth{font-size:.83rem;color:var(--text2)}
+  .pub-title{font-size:.92rem;font-weight:700;color:var(--slate);margin:3px 0;line-height:1.45}
+  .pub-j{font-size:.82rem;color:var(--text2);font-style:italic}
+  .pub-link{font-size:.76rem;color:var(--teal);margin-left:6px}
+  .chip{display:inline-block;font-size:.66rem;font-weight:700;padding:1px 7px;border-radius:20px;margin-left:6px;vertical-align:middle;letter-spacing:.04em}
+  .chip-pub{background:#dff4e8;color:#1a7a3c;border:1px solid rgba(26,122,60,.2)}
+  .chip-wp{background:#fff3e0;color:#8a5f10;border:1px solid rgba(138,95,16,.2)}
+
+  /* CONFERENCES */
+  .conf{padding:12px 0;border-bottom:1px solid var(--border);font-size:.88rem;line-height:1.7;color:var(--text2)}
+  .conf:last-child{border-bottom:none}
+  .conf strong{color:var(--slate)}
+
+  /* CONTACT */
+  .contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:700px){.contact-grid{grid-template-columns:1fr}}
+  .cc{background:var(--teal-pale);border:1px solid var(--border);border-radius:4px;padding:16px 18px}
+  .cc-name{font-size:.92rem;font-weight:700;color:var(--slate);margin-bottom:2px}
+  .cc-role{font-size:.72rem;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}
+  .cc-email{font-size:.8rem;color:var(--teal)}
+
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+
+  .tag{display:inline-block;background:var(--teal-light);color:var(--teal);font-size:.71rem;font-weight:600;padding:3px 10px;border-radius:20px;margin:3px 3px 3px 0;border:1px solid var(--border)}
+
+  .prereg{background:var(--slate);color:#fff;border-radius:4px;padding:16px 20px;font-size:.83rem;line-height:1.65;margin-top:16px}
+  .prereg strong{color:#7dd3c8}
+  .prereg a{color:#7dd3c8}
+
+  .highlight-box{background:var(--teal);color:#fff;border-radius:4px;padding:20px 24px;margin:20px 0}
+  .highlight-box p{color:rgba(255,255,255,.88);margin:0}
+  .highlight-box strong{color:#fff}
+
+  footer{background:var(--slate);color:rgba(255,255,255,.45);text-align:center;padding:24px 20px;font-size:.75rem;line-height:1.8;margin-top:40px}
+  footer a{color:rgba(255,255,255,.6)}
+  footer a:hover{color:#7dd3c8;text-decoration:none}
+</style>
+</head>
+<body>
+
+<div class="strip">
+  <div class="strip-inner">
+    <a href="https://ue.poznan.pl" target="_blank">Poznań University of Economics and Business</a>
+    <span class="strip-sep">|</span>
+    <a href="https://ncn.gov.pl/en" target="_blank">National Science Centre Poland · OPUS-25</a>
+    <span class="strip-sep">|</span>
+    <span>Grant No. 2023/49/B/HS4/01647</span>
+  </div>
+</div>
+
+<nav>
+  <div class="nav-inner">
+    <div class="logo">
+      <span class="logo-re">RE</span><span class="logo-work">WORK</span>
+      <span class="logo-sub">Project</span>
+    </div>
+    <div class="nav-tabs">
+      <button class="nt active" onclick="go('home',0)">Home</button>
+      <button class="nt" onclick="go('about',1)">About</button>
+      <button class="nt" onclick="go('tasks',2)">Research</button>
+      <button class="nt" onclick="go('team',3)">Team</button>
+      <button class="nt" onclick="go('publications',4)">Publications</button>
+      <button class="nt" onclick="go('conferences',5)">Conferences</button>
+      <button class="nt" onclick="go('consultations',6)">Consultations</button>
+      <button class="nt" onclick="go('contact',7)">Contact</button>
+    </div>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div>
+      <div class="hero-kicker">NCN OPUS-25 · 2024–2027</div>
+      <h1>Can <span>Remote Working</span> Make the Labour Market More Inclusive?</h1>
+      <p class="hero-desc">Assessing the potential of work-from-home to spur convergence in regional and local labour markets and to increase the activity rate among women across selected EU countries.</p>
+      <div class="hero-btns">
+        <a class="btn btn-primary" href="https://ue.poznan.pl/pobierz/f1pEV1lYUFJWWnkJFgMIDgcBAwg/" target="_blank">Pre-registration</a>
+        <a class="btn btn-outline" href="https://ncn.gov.pl/en" target="_blank">NCN Poland</a>
+      </div>
+    </div>
+    <div class="info-card">
+      <h3>Project Information</h3>
+      <div class="info-row"><span class="info-key">Grant</span><span class="info-val">2023/49/B/HS4/01647</span></div>
+      <div class="info-row"><span class="info-key">Programme</span><span class="info-val">OPUS-25, NCN Poland</span></div>
+      <div class="info-row"><span class="info-key">Budget</span><span class="info-val">807,425 PLN</span></div>
+      <div class="info-row"><span class="info-key">Duration</span><span class="info-val">1 Oct 2024 – 30 Sep 2027</span></div>
+      <div class="info-row"><span class="info-key">Area</span><span class="info-val">HS4 – Individuals, Institutions, Markets</span></div>
+      <div class="info-row"><span class="info-key">Countries</span><span class="info-val">France, Italy, Sweden, Romania, Poland, Netherlands</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+
+  <!-- HOME -->
+  <div class="section active" id="tab-home">
+    <h2 class="st">Welcome</h2>
+    <p>The <strong>REWORK</strong> project investigates whether remote working can significantly impact both the migration of individuals from metropolitan areas to peripheral regions and the labour force participation rate of women. The extent of this effect is hypothesised to depend on the level of state involvement in promoting remote work as a standard form of employment.</p>
+
+    <div class="stats">
+      <div class="stat"><div class="stat-n">807K</div><div class="stat-l">PLN Research Budget</div></div>
+      <div class="stat"><div class="stat-n">3</div><div class="stat-l">Years · 2024–2027</div></div>
+      <div class="stat"><div class="stat-n">6</div><div class="stat-l">EU Countries</div></div>
+      <div class="stat"><div class="stat-n">5</div><div class="stat-l">Research Tasks</div></div>
+    </div>
+
+    <div class="two-col">
+      <div class="card">
+        <div class="card-num">Main Objective</div>
+        <div class="card-title">Regional convergence & women's labour market activity</div>
+        <div class="card-body">Assessing the prospect of remote working to spur convergence in regional and local labour markets and to increase the activity rate among women with children under the age of six.</div>
+      </div>
+      <div class="card">
+        <div class="card-num">Key Innovation</div>
+        <div class="card-title">Original conjoint survey across 6 EU countries</div>
+        <div class="card-body">New primary survey data collected in France, Italy, Sweden, Romania, Poland and the Netherlands, using a conjoint experiment design — first of its kind in this regional context.</div>
+      </div>
+    </div>
+
+    <div class="prereg">
+      <strong>Pre-registration:</strong> The study was preregistered on <strong>February 12, 2026</strong>, at AsPredicted (Wharton Credibility Lab, University of Pennsylvania). &nbsp;<a href="https://ue.poznan.pl/pobierz/f1pEV1lYUFJWWnkJFgMIDgcBAwg/" target="_blank">View pre-registration →</a>
+    </div>
+  </div>
+
+  <!-- ABOUT -->
+  <div class="section" id="tab-about">
+    <h2 class="st">About the Project</h2>
+    <p>The COVID-19 pandemic has profoundly impacted the adoption of digital and remote work practices, leading to significant changes in societal attitudes. This shift has granted employees greater control over their working hours and the freedom to choose their place of residence, while allowing employers to tap into previously inactive or marginalised segments of the labour market.</p>
+    <p>Given European markets' ageing population and labour shortages, remote work can activate the workforce, reduce social inequalities, and support local labour market development. The REWORK project evaluates the influence of remote work on the activation of women and the spatial mobility of young families.</p>
+
+    <h3 class="sh">Core Hypotheses</h3>
+    <div class="card">
+      <div class="card-num">Hypothesis 1 — Regional Mobility</div>
+      <div class="card-title">Does remote work drive relocation from urban to peripheral areas?</div>
+      <div class="card-body">Does the implementation of remote work solutions in the post-pandemic era encourage individuals aged 25–49 to relocate from urban areas to peripheral regions?</div>
+    </div>
+    <div class="card">
+      <div class="card-num">Hypothesis 2 — Women's Participation</div>
+      <div class="card-title">Does remote work motivate mothers to increase workforce participation?</div>
+      <div class="card-body">Does remote work motivate women with children under the age of six to increase their professional activity — and equally so in peripheral regions as in metropolitan areas?</div>
+    </div>
+
+    <h3 class="sh">Geographical Focus</h3>
+    <div style="margin-bottom:12px">
+      <div class="tag">🇫🇷 France</div>
+      <div class="tag">🇮🇹 Italy</div>
+      <div class="tag">🇸🇪 Sweden</div>
+      <div class="tag">🇷🇴 Romania</div>
+      <div class="tag">🇵🇱 Poland</div>
+      <div class="tag">🇳🇱 Netherlands</div>
+    </div>
+    <p style="font-size:.85rem">Countries selected based on their post-pandemic experiences in promoting work-from-home opportunities for mothers with young children and observations of regional migration patterns.</p>
+
+    <h3 class="sh">Why It Matters</h3>
+    <div class="highlight-box">
+      <p>Promoting women's professional engagement is a priority and key objective of the EU's economic policy. Increased female labour force participation fosters diversity and empowers women to support themselves, their families, and their communities. Furthermore, technological and social changes associated with remote work can serve as drivers of regional development and mitigate the negative consequences of urbanisation.</p>
+    </div>
+  </div>
+
+  <!-- TASKS -->
+  <div class="section" id="tab-tasks">
+    <h2 class="st">Research Tasks & Methodology</h2>
+    <p>The project consists of five research tasks, combining primary and secondary empirical data using quantitative and qualitative methods. The main data source is a conjoint experiment survey conducted in six EU countries.</p>
+
+    <div class="card"><div class="card-num">Task 1</div><div class="card-title">Comparing remote working arrangements across EU countries</div><div class="card-body">Systematic cross-country comparison of remote work uptake, regulation, and labour market outcomes across selected EU member states.</div></div>
+    <div class="card"><div class="card-num">Task 2</div><div class="card-title">Designing and conducting a conjoint survey</div><div class="card-body">Development and implementation of an original conjoint experiment survey in France, Italy, Sweden, Romania, Poland and the Netherlands.</div></div>
+    <div class="card"><div class="card-num">Task 3</div><div class="card-title">Evaluating employee motivation to reside in peripheral areas</div><div class="card-body">Investigating whether and how remote work motivates individuals aged 25–49 to relocate from metropolitan centres to peripheral regions.</div></div>
+    <div class="card"><div class="card-num">Task 4</div><div class="card-title">Investigating mothers' motivation to increase workforce participation</div><div class="card-body">Examining how remote work affects professional activation of women with young children (under age 6) across different regional contexts.</div></div>
+    <div class="card"><div class="card-num">Task 5</div><div class="card-title">Determining whether remote work activates women equally across regions</div><div class="card-body">Comparative assessment of remote work's potential to activate women in peripheral regions versus metropolitan areas.</div></div>
+
+    <h3 class="sh">Project Timeline</h3>
+    <div class="tl">
+      <div class="tli"><div class="tly">October 2024</div><div class="tlt">Project launch · Literature review and comparative EU analysis begins</div></div>
+      <div class="tli"><div class="tly">2025</div><div class="tlt">Conjoint survey design and fieldwork · First publications · EAEPE Athens conference</div></div>
+      <div class="tli"><div class="tly">February 12, 2026</div><div class="tlt">Study preregistered at AsPredicted (Wharton Credibility Lab, University of Pennsylvania)</div></div>
+      <div class="tli"><div class="tly">2026</div><div class="tlt">Survey data analysis · Regional comparative study · EAEPE Lausanne special session</div></div>
+      <div class="tli"><div class="tly">September 2027</div><div class="tlt">Project completion · Final publications · Policy recommendations · NCN final report</div></div>
+    </div>
+  </div>
+
+  <!-- TEAM -->
+  <div class="section" id="tab-team">
+    <h2 class="st">Project Team</h2>
+    <div class="team-grid">
+      <div class="tc">
+        <div class="tc-name">Beata Woźniak-Jęchorek</div>
+        <div class="tc-role">Principal Investigator</div>
+        <div class="tc-info">dr hab., prof. UEP<br>Institute of Economics, PUEB<br><br>
+        <a href="https://ue.poznan.pl/osoby/dr-hab-beata-wozniak-jechorek/" target="_blank">PUEB Profile</a> · <a href="https://orcid.org/0000-0002-5029-5885" target="_blank">ORCID</a><br>
+        <a href="mailto:beata.wozniak-jechorek@ue.poznan.pl">beata.wozniak-jechorek@ue.poznan.pl</a></div>
+      </div>
+      <div class="tc">
+        <div class="tc-name">Michał Pilc</div>
+        <div class="tc-role">Investigator</div>
+        <div class="tc-info">dr Michał Pilc<br>Institute of Economics, PUEB<br><br>
+        <a href="https://orcid.org/0000-0002-7990-4584" target="_blank">ORCID</a><br>
+        <a href="mailto:michal.pilc@ue.poznan.pl">michal.pilc@ue.poznan.pl</a></div>
+      </div>
+      <div class="tc">
+        <div class="tc-name">Sławomir Kuźmar</div>
+        <div class="tc-role">Investigator</div>
+        <div class="tc-info">dr Sławomir Kuźmar<br>Institute of Economics, PUEB<br><br>
+        <a href="https://orcid.org/0000-0002-2458-0463" target="_blank">ORCID</a><br>
+        <a href="mailto:slawomir.kuzmar@ue.poznan.pl">slawomir.kuzmar@ue.poznan.pl</a></div>
+      </div>
+      <div class="tc">
+        <div class="tc-name">Wiktoria Domagała</div>
+        <div class="tc-role">Investigator</div>
+        <div class="tc-info">dr Wiktoria Domagała<br>Institute of Economics, PUEB<br><br>
+        <a href="https://orcid.org/0000-0003-0244-3166" target="_blank">ORCID</a><br>
+        <a href="mailto:wiktoria.domagala@ue.poznan.pl">wiktoria.domagala@ue.poznan.pl</a></div>
+      </div>
+      <div class="tc">
+        <div class="tc-name">Julia Jastrząbek</div>
+        <div class="tc-role">Investigator</div>
+        <div class="tc-info">dr Julia Jastrząbek<br>Institute of Economics, PUEB<br><br>
+        <a href="https://orcid.org/0000-0001-5628-6560" target="_blank">ORCID</a><br>
+        <a href="mailto:julia.jastrzabek@ue.poznan.pl">julia.jastrzabek@ue.poznan.pl</a></div>
+      </div>
+      <div class="tc">
+        <div class="tc-name">Rick Dey</div>
+        <div class="tc-role">Student Research Assistant</div>
+        <div class="tc-info">Poznań University of Economics and Business</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PUBLICATIONS -->
+  <div class="section" id="tab-publications">
+    <h2 class="st">Publications</h2>
+
+    <div class="pub">
+      <div class="pub-auth">Beata Woźniak-Jęchorek, Sławomir Kuźmar &amp; David Bole <span class="chip chip-pub">Published 2026</span></div>
+      <div class="pub-title">Will Remote Work Drive a New Wave of Suburbanisation in Poland? Analysing the Relocation Preferences of Polish Office Employees.</div>
+      <div class="pub-j"><em>Applied Geography</em>, 186, 103848. <a class="pub-link" href="https://doi.org/10.1016/j.apgeog.2025.103848" target="_blank">DOI →</a></div>
+    </div>
+
+    <div class="pub">
+      <div class="pub-auth">Sławomir Kuźmar <span class="chip chip-pub">Published 2026</span></div>
+      <div class="pub-title">Relocation Preferences in the Era of Work From Home: Theoretical Framework.</div>
+      <div class="pub-j"><em>Ekonomia i Prawo. Economics and Law</em>, Vol. 25, No. 1, pp. 23–42. <a class="pub-link" href="https://doi.org/10.12775/EiP.2026.2" target="_blank">DOI →</a></div>
+    </div>
+
+    <div class="pub">
+      <div class="pub-auth">Beata Woźniak-Jęchorek &amp; Sławomir Kuźmar <span class="chip chip-wp">Under review</span></div>
+      <div class="pub-title">Remote Work in Poland: Socio-Economic Drivers and Preferences.</div>
+      <div class="pub-j">Working paper.</div>
+    </div>
+
+    <div class="pub">
+      <div class="pub-auth">Wiktoria Domagała &amp; Julia Jastrząbek <span class="chip chip-wp">Under review</span></div>
+      <div class="pub-title">Advancing Gender Equality through EU Law: A Comprehensive Review.</div>
+      <div class="pub-j">Working paper.</div>
+    </div>
+
+    <div class="pub">
+      <div class="pub-auth">Beata Woźniak-Jęchorek <span class="chip chip-pub">2025</span></div>
+      <div class="pub-title">Niedobory siły roboczej i kompetencji na europejskim rynku pracy w erze digitalizacji: trendy, prognozy, wyzwania.</div>
+      <div class="pub-j"><em>Bezpieczeństwo społeczne i gospodarcze w perspektywie krajowej i europejskiej</em>, Studia BAS, 1(81) 2025, s. 77–102.</div>
+    </div>
+
+    <div class="pub">
+      <div class="pub-auth">Beata Woźniak-Jęchorek <span class="chip chip-wp">Under review</span></div>
+      <div class="pub-title">Praca z domu jako instrument aktywizacji kobiet na europejskim rynku pracy – wnioski z przeglądu danych.</div>
+      <div class="pub-j">Working paper.</div>
+    </div>
+  </div>
+
+  <!-- CONFERENCES -->
+  <div class="section" id="tab-conferences">
+    <h2 class="st">Conference Presentations</h2>
+
+    <div class="conf"><strong>Sławomir Kuźmar</strong> — "Preferencje dotyczące pracy zdalnej a decyzje o relokacji: konceptualizacja teoretyczna", VIII Konferencja naukowa z cyklu <em>Instytucje w teorii i praktyce</em>, Toruń, 11–12 September 2025.</div>
+    <div class="conf"><strong>Beata Woźniak-Jęchorek</strong> — "Conjoint survey experiment: Empowering Women Through Remote Work", 37th Annual EAEPE Conference, Athens, 24–26 September 2025.</div>
+    <div class="conf"><strong>Sławomir Kuźmar</strong> — "Remote Work and Relocation Preferences: A Theoretical Conceptualization", 37th Annual EAEPE Conference, Athens, 24–26 September 2025.</div>
+    <div class="conf"><strong>Beata Woźniak-Jęchorek, Michał Pilc, Sławomir Kuźmar, Wiktoria Domagała, Julia Jastrząbek</strong> — "Atrakcyjność pracy zdalnej wśród matek. Wyniki pilotażu we Francji, Polsce, Rumunii, Szwecji i Włoszech", XI Kongres Ekonomistów Polskich, 4–5 December 2025.</div>
+    <div class="conf"><strong>Sławomir Kuźmar</strong> — "From Core to Periphery? Assessing Remote Work's Potential to Rebalance EU Regional Development", ECOS Conference, Brno, 26–27 March 2026.</div>
+    <div class="conf" style="background:var(--teal-pale);padding:12px 14px;border-radius:4px;border-left:3px solid var(--teal)">
+      <strong>Special Session (organised by the REWORK team)</strong> — "Gender, Labour, and Technological Changes: Feminist and Heterodox Perspectives on Changing Labour Markets", 38th EAEPE Annual Conference 2026, Lausanne, Switzerland, 9–11 September 2026.
+    </div>
+  </div>
+
+  <!-- CONSULTATIONS -->
+  <div class="section" id="tab-consultations">
+    <h2 class="st">International Consultations</h2>
+    <p>The project involves ongoing scientific consultations with leading international researchers in labour economics, political science, and gender studies.</p>
+
+    <div class="card"><div class="card-num">April 9, 2025 & January 11, 2026</div><div class="card-title">James Druckman — University of Rochester, USA</div><div class="card-body">Online consultations on survey design for the study on women (April 2025) and relocation study (January 2026).</div></div>
+    <div class="card"><div class="card-num">February 5, 2026</div><div class="card-title">Yana van der Meulen Rodgers — Rutgers University, USA</div><div class="card-body">Online consultation on the study on women and labour market participation.</div></div>
+    <div class="card"><div class="card-num">March 20, 2026</div><div class="card-title">CBP Regional and Entrepreneurship Webinar — Aston Business School, UK</div><div class="card-body">Participation in webinar at Centre for Business Prosperity (Aston University, Birmingham), including presentation: "Relocation Intentions in the Remote Work Era: Evidence from Hybrid Choice Model Approach" (Sławomir Kuźmar).</div></div>
+    <div class="card"><div class="card-num">March 16–20, 2026</div><div class="card-title">Montpellier Business School — International Week</div><div class="card-body">Scientific consultations during International Week, Montpellier Business School, France (Beata Woźniak-Jęchorek).</div></div>
+  </div>
+
+  <!-- CONTACT -->
+  <div class="section" id="tab-contact">
+    <h2 class="st">Contact</h2>
+    <div class="contact-grid">
+      <div class="cc"><div class="cc-name">Beata Woźniak-Jęchorek</div><div class="cc-role">Principal Investigator</div><a class="cc-email" href="mailto:beata.wozniak-jechorek@ue.poznan.pl">beata.wozniak-jechorek@ue.poznan.pl</a></div>
+      <div class="cc"><div class="cc-name">Michał Pilc</div><div class="cc-role">Investigator</div><a class="cc-email" href="mailto:michal.pilc@ue.poznan.pl">michal.pilc@ue.poznan.pl</a></div>
+      <div class="cc"><div class="cc-name">Sławomir Kuźmar</div><div class="cc-role">Investigator</div><a class="cc-email" href="mailto:slawomir.kuzmar@ue.poznan.pl">slawomir.kuzmar@ue.poznan.pl</a></div>
+      <div class="cc"><div class="cc-name">Julia Jastrząbek</div><div class="cc-role">Investigator</div><a class="cc-email" href="mailto:julia.jastrzabek@ue.poznan.pl">julia.jastrzabek@ue.poznan.pl</a></div>
+      <div class="cc"><div class="cc-name">Wiktoria Domagała</div><div class="cc-role">Investigator</div><a class="cc-email" href="mailto:wiktoria.domagala@ue.poznan.pl">wiktoria.domagala@ue.poznan.pl</a></div>
+      <div class="cc" style="background:var(--white)"><div class="cc-name">Institution</div><div class="cc-role" style="color:var(--text2);text-transform:none;font-size:.8rem;font-weight:normal">Institute of Economics<br>Poznań University of Economics and Business<br>Al. Niepodległości 10, 61-895 Poznań</div></div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div style="max-width:1140px;margin:0 auto">
+    <strong style="color:rgba(255,255,255,.8)">REWORK</strong> — Can Remote Working Make the Labour Market More Inclusive?<br>
+    Grant No. 2023/49/B/HS4/01647 · OPUS-25 · National Science Centre Poland · 2024–2027<br><br>
+    <a href="https://ue.poznan.pl" target="_blank">Poznań University of Economics and Business</a> ·
+    <a href="https://ncn.gov.pl/en" target="_blank">NCN Poland</a> ·
+    <a href="https://ue.poznan.pl/osoby/dr-hab-beata-wozniak-jechorek/" target="_blank">Principal Investigator</a>
+  </div>
+</footer>
+
+<script>
+function go(id, idx) {
+  document.querySelectorAll('.nt').forEach((t,i) => t.classList.toggle('active', i===idx));
+  const cur = document.querySelector('.section.active');
+  if(cur && cur.id !== 'tab-'+id){
+    cur.classList.remove('visible');
+    setTimeout(()=>{ cur.classList.remove('active'); show(id); }, 280);
+  } else if(!cur){ show(id); }
+}
+function show(id){
+  const el = document.getElementById('tab-'+id);
+  if(!el) return;
+  el.classList.add('active');
+  requestAnimationFrame(()=> requestAnimationFrame(()=> el.classList.add('visible')));
+  window.scrollTo({top: document.querySelector('nav').offsetHeight + document.querySelector('.hero').offsetHeight - 10, behavior:'smooth'});
+}
+setTimeout(()=> document.getElementById('tab-home').classList.add('visible'), 60);
+</script>
+</body>
+</html>
